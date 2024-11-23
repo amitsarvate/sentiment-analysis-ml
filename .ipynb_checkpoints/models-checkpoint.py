@@ -9,20 +9,17 @@ class FeedforwardNeuralNetwork(nn.Module):
 
         self.fc1 = nn.Linear(input_dim, hidden_dim)
         self.relu1 = nn.ReLU()
-
-
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        self.relu1 = nn.ReLU()
+        self.relu2 = nn.ReLU()
+        self.fc3 = nn.Linear(hidden_dim, output_dim)
 
-        self.fc3 = nn.Linear(hidden_dim, output_dim)  
 
     def forward(self, x):
-        out = self.fc1(x)
-        out = self.relu1(out)
-        
-        out = self.fc2(out)
-        out = self.relu2(out)
+        x = self.fc1(x)
+        x = self.relu1(x)
+        x = self.fc2(x)
+        x = self.relu2(x)
+        x = self.fc3(x)
+        return x  
 
-        out = self.fc3(out)
-
-        return F.softmax(out, dim=1)
+    
