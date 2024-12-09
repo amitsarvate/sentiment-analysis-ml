@@ -37,3 +37,22 @@ class FeedforwardNeuralNetwork(nn.Module):
         x = self.fc3(x)
         return x
 
+class GRUNeuralNetwork(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_classes, num_layers=1, bidirectional=False, dropout=0.3):
+        super(GRUNeuralNetwork, self).__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        self.gru = nn.GRU(embed_dim, hidden_dim, num_layers=num_layers, bidirectional=bidirectional, batch_first=True, dropout=dropout)
+        self.fc = nn.Linear(hidden_dim * (2 if bidirectional else 1), num_classes)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):
+        # Embedding
+        x = self.embedding(x)
+        # GRU
+        gru_out, _ = self.gru(x)
+        # Use the last hidden state for classification
+        x = gru_out[:, -1, :]
+        x = self.dropout(x)
+        # Fully connected layer
+        x = self.fc(x)
+        return x
