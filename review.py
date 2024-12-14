@@ -1,5 +1,6 @@
 import torch
-from new_models import FeedforwardNeuralNetwork, ConvolutionalNeuralNetwork, GatedRecurrentUnit
+import torch.nn.functional as F
+from models import FeedforwardNeuralNetwork, ConvolutionalNeuralNetwork, GatedRecurrentUnit
 from torch.nn.utils.rnn import pad_sequence
 import json
 
@@ -31,8 +32,14 @@ modelGRU.eval()
 
 def preprocess_review(review, vocab, max_len):
     tokens = [vocab.get(word, vocab['<UNK>']) for word in review.split()]
-    padded_tokens = pad_sequence([torch.tensor(tokens[:max_len])], batch_first=True, padding_value=0)
+    token_tensor = torch.tensor(tokens[:max_len])
+    if len(token_tensor) < max_len:
+        padded_tokens = F.pad(token_tensor, (0, max_len - token_tensor.size(0)), value=0)  # Ensure fixed size
+    else:
+        padded_tokens = token_tensor
+    padded_tokens = padded_tokens.unsqueeze(0)  # Add batch dimension
     return padded_tokens
+
 
 
 def predict_sentiment(review, model, vocab, max_len):
@@ -60,5 +67,5 @@ if __name__ == "__main__":
             print("Goodbye!")
             break
 
-        sentiment = predict_sentiment(user_review, modelGRU, vocab, max_len)
+        sentiment = predict_sentiment(user_review, modelCNN, vocab, max_len)
         print(f"The predicted sentiment is: {sentiment}")

@@ -9,16 +9,18 @@ import matplotlib.pyplot as plt
 class FeedforwardNeuralNetwork(nn.Module):
     def __init__(self, vocab_size, embed_dim, hidden_dim, output_dim, max_len):
         super(FeedforwardNeuralNetwork, self).__init__()
-        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)  # Random embeddings
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)  
         self.fc1 = nn.Linear(embed_dim * max_len, hidden_dim)
         self.relu1 = nn.ReLU()
         self.fc2 = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, x):
-        x = self.embedding(x).view(x.size(0), -1)  # Flatten embeddings
+        x = self.embedding(x)  
+        x = x.view(x.size(0), -1)  
         x = self.relu1(self.fc1(x))
-        x = self.fc2(x).squeeze(-1)  # Output logits
+        x = self.fc2(x).squeeze(-1)  
         return x
+
     
 class ConvolutionalNeuralNetwork(nn.Module):
     def __init__(self, vocab_size, embed_dim, num_filters, kernel_sizes, output_dim):
