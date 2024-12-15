@@ -55,5 +55,5 @@ st.title('Movie Review Sentiment Prediction')
 user_review = st.text_input("Please enter your movie review: ")
 
 if user_review:  # Ensure input exists before predicting
-    sentiment = predict_sentiment(user_review, modelCNN, vocab, max_len)
+    sentiment = predict_sentiment(user_review, modelGRU, vocab, max_len)
     st.text(f"The predicted sentiment is: {sentiment}")
