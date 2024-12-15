@@ -53,6 +53,10 @@ class GatedRecurrentUnit(nn.Module):
     def forward(self, x):
         x = self.embedding(x)
         _, hidden = self.gru(x)
-        hidden = hidden.view(hidden.size(1), -1)  # Concatenate bidirectional states
-        x = self.fc(self.dropout(hidden)).squeeze(-1)  # Output logits
+        forward_hidden = hidden[-2, :, :]  # Last layer forward direction
+        backward_hidden = hidden[-1, :, :]  # Last layer backward direction
+        
+        # Concatenate forward and backward hidden states
+        combined_hidden = torch.cat((forward_hidden, backward_hidden), dim=1)  # Shape: (batch_size, hidden_dim * 2)
+        x = self.fc(self.dropout(combined_hidden)).squeeze(-1)  # Output logits
         return x
