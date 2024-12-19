@@ -32,11 +32,11 @@ The project uses the following libraries (see requirements.txt):
 
 * streamlit
 
-*torch
+* torch
 
 * torchvision
 
-*numpy
+* numpy
 
 * pandas
 
